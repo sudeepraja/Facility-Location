@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.optimize import linprog
+from scipy.linalg import norm
 from pulp import *
 
 class Facility_Location(object):
@@ -168,13 +168,25 @@ class Facility_Location(object):
 def main():
 	np.random.seed(3)
 	f=3
-	d=5
+	d=8
+
+	facilities_matrix = np.random.randint(0,100, size=(f,3))
+	demands_matrix = np.random.randint(0,100, size=(d,3))
+
+	print "Facilities points:",f,"\n", facilities_matrix
+	print "Demand points:",d,"\n",demands_matrix
 
 	## Give a list of facility costs
 	facility_costs = np.random.randint(low = 1, high = 100, size = f)
 
 	## Give array of demand costs. Indexed by demand, facility.
-	demand_costs = np.random.randint(low = 1, high=100, size = (d,f))
+	demand_costs = np.zeros((d,f))
+
+	for i in range(f):
+		for j in range(d):
+			demand_costs[j][i] = norm(demands_matrix[j]-facilities_matrix[i])
+
+	print "Cost matrix:\n",demand_costs
 
 	## Create Instance
 	F = Facility_Location(facility_costs,demand_costs)
